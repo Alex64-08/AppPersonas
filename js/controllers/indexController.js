@@ -1,11 +1,13 @@
-import { getPeople,addPerson, deletePerson } from "../services/peopleService.js";
+import { getPeople,addPerson, deletePerson, getPerson , updatePerson } from "../services/peopleService.js";
 
-const tdPeople = document.getElementById("tdPeople");
+const tbPeople = document.getElementById("tbPeople");
 const txtName = document.getElementById("txtName");
 const txtEmail = document.getElementById("txtEmail");
 const txtPhone = document.getElementById("txtPhone");
 const btnAddPerson = document.getElementById("btnAddPerson");
 const frmAddPerson = document.getElementById("frmAddPerson");
+const idPerson = document.getElementById("idPerson");
+const btnCancel = document.getElementById("btnCancel");
 
 async function loadPeople() {
 
@@ -23,8 +25,8 @@ async function loadPeople() {
                     <td>${person.phone}</td>
                     <td>
                         <button class="btn btn-danger" onclick="removePerson(${person.id})">Eliminar</button>
-                        <button class="btn btn-warning">Editar</button>
-                    <td>
+                        <button class="btn btn-warning" onclick="loadPersonData(${person.id})">Editar</button>
+                    </td>
                 </tr>
             `;
         });
@@ -42,6 +44,7 @@ frmAddPerson.addEventListener("submit", async function(event) {
     
     event.preventDefault();
 
+    const id = idPerson.value.trim();
     const name = txtName.value.trim();
     const email = txtEmail.value.trim();
     const phone = txtPhone.value.trim();
@@ -58,8 +61,14 @@ frmAddPerson.addEventListener("submit", async function(event) {
     }
 
     try {
-        await addPerson(person);
-        alert("Persona guardada correctamente.");
+        if(id != "") {
+            await updatePerson(id,person);
+            alert("Se ha actualizado a la persona correctamente.");
+        }
+        else{
+            await addPerson(person);
+            alert("Persona guardada correctamente.");
+        }
 
         resetForm();
 
@@ -72,7 +81,12 @@ frmAddPerson.addEventListener("submit", async function(event) {
 
 function resetForm() {
     frmAddPerson.reset();
+    idPerson.value = "";
+    btnAddPerson.textContent = "Guardar";
+    btnCancel.classList.add("d-none");
 }
+
+
 
 async function removePerson(id) {
     const confirmDelete = confirm('¿Deseas eliminar esta persona?');
@@ -91,4 +105,25 @@ async function removePerson(id) {
     }
 }
 
+async function loadPersonData(id) {
+    try {
+        const person = await getPerson(id);
+
+        idPerson.value = person.id;
+        txtName.value = person.name;
+        txtEmail.value = person.email;
+        txtPhone.value = person.phone;
+
+        btnAddPerson.textContent = "Actualizar"
+        btnCancel.classList.remove("d-none");
+
+        frmAddPerson.scrollIntoView({behavior: 'smooth', block: 'start'})
+    } catch (error) {
+        alert("No se pudo cargar los datos de la persona: " + error);
+        console.error(error);
+    }
+}
+btnCancel.addEventListener("click",resetForm );
+
 window.removePerson = removePerson;
+window.loadPersonData = loadPersonData;

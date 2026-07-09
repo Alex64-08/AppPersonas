@@ -57,4 +57,60 @@ export async function deletePerson(id) {
         console.error("Error al eliminar la persona: " + error);
         throw error; 
     }
+    
 }
+
+export async function getPerson(id) {
+    
+    try {
+        const response = await fetch(`${API_URL}/${id}`);
+
+        if(!response.ok) {
+            throw new Error("Error al obtener a la persona");
+        }
+
+        const person = await response.json();
+
+        return person;
+
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function updatePerson(id, person) {
+    
+    try {
+        const response = await fetch(`${API_URL}/${id}`,{
+            method: "PUT",
+            headers: {
+                "content-Type":"application/json"
+            },
+            body: JSON.stringify(person)
+        })
+
+        if(!response.ok) {
+            throw new Error("Error al actualizar a la persona");
+        }
+        
+        const updatedPerson = await response.json();
+
+        return updatedPerson;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

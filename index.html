@@ -31,6 +31,9 @@
                 <!-- Formulario para agregar personas -->
                  
                 <form id="frmAddPerson">
+                    
+                    <input type="hidden" id="idPerson">
+
                     <div class="my-3 form-group">
                         <label for="txtName" class="form-label">Nombre:</label>
                         <input type="text" id="txtName" class="form-control" required>
@@ -48,6 +51,7 @@
 
                     <div class="form-group my-3">
                         <button id="btnAddPerson" class="btn btn-primary" type="submit">Guardar</button>
+                        <button id="btnCancel" class="btn btn-secondary d-none">Cancelar</button>
                     </div>
                 </form>
             </div>
